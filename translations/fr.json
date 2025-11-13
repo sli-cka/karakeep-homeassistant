@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connecter Karakeep",
+        "description": "Configurer la connexion à votre instance Karakeep",
+        "data": {
+          "url": "URL de base Karakeep (par ex. https://app.karakeep.com)",
+          "token": "Jeton API Karakeep",
+          "scan_interval": "Intervalle de mise à jour (secondes)"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigurer Karakeep",
+        "description": "Mettre à jour les paramètres de connexion Karakeep",
+        "data": {
+          "url": "URL de base Karakeep (par ex. https://app.karakeep.com)",
+          "token": "Jeton API Karakeep",
+          "scan_interval": "Intervalle de mise à jour (secondes)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Échec de connexion au serveur Karakeep. Vérifiez votre connexion réseau et réessayez.",
+      "invalid_auth": "Jeton d'authentification invalide. Vérifiez votre jeton API et réessayez.",
+      "invalid_url": "L’URL fournie est invalide. Veuillez saisir une URL API Karakeep valide.",
+      "invalid_url_format": "Le format de l’URL est invalide. Assurez-vous qu’il inclut le protocole (http:// ou https://) et le domaine.",
+      "timeout_error": "Délai de connexion au serveur Karakeep dépassé. Veuillez réessayer plus tard.",
+      "client_error": "Une erreur s’est produite lors de la communication avec l’API Karakeep. Veuillez réessayer.",
+      "invalid_api_path": "Le chemin de l’API est invalide. Vérifiez la configuration de l’URL.",
+      "api_error": "L’API Karakeep a renvoyé une erreur. Vérifiez votre configuration.",
+      "unknown": "Une erreur inattendue s’est produite. Consultez les journaux pour plus de détails."
+    },
+    "abort": {
+      "already_configured": "Karakeep est déjà configuré",
+      "no_existing_config": "Aucune configuration Karakeep existante à reconfigurer",
+      "reconfigure_successful": "La configuration Karakeep a été mise à jour avec succès"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configurer Karakeep",
+        "description": "Mettre à jour les paramètres de l’intégration Karakeep",
+        "data": {
+          "scan_interval": "Intervalle de mise à jour (secondes)"
+        }
+      }
+    }
+  }
+}

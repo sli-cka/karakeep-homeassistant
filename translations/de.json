@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Mit Karakeep verbinden",
+        "description": "Verbindung zu deiner Karakeep-Instanz konfigurieren",
+        "data": {
+          "url": "Karakeep Basis-URL (z. B. https://app.karakeep.com)",
+          "token": "Karakeep API-Token",
+          "scan_interval": "Aktualisierungsintervall (Sekunden)"
+        }
+      },
+      "reconfigure": {
+        "title": "Karakeep neu konfigurieren",
+        "description": "Einstellungen der Karakeep-Verbindung aktualisieren",
+        "data": {
+          "url": "Karakeep Basis-URL (z. B. https://app.karakeep.com)",
+          "token": "Karakeep API-Token",
+          "scan_interval": "Aktualisierungsintervall (Sekunden)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zum Karakeep-Server fehlgeschlagen. Bitte Netzwerkverbindung prüfen und erneut versuchen.",
+      "invalid_auth": "Ungültiges Authentifizierungstoken. Bitte das API-Token prüfen und erneut versuchen.",
+      "invalid_url": "Die angegebene URL ist ungültig. Bitte eine gültige Karakeep API-URL eingeben.",
+      "invalid_url_format": "Das URL-Format ist ungültig. Bitte stelle sicher, dass Protokoll (http:// oder https://) und Domain enthalten sind.",
+      "timeout_error": "Zeitüberschreitung bei der Verbindung zum Karakeep-Server. Bitte später erneut versuchen.",
+      "client_error": "Bei der Kommunikation mit der Karakeep API ist ein Fehler aufgetreten. Bitte erneut versuchen.",
+      "invalid_api_path": "Der API-Pfad ist ungültig. Bitte die URL-Konfiguration prüfen.",
+      "api_error": "Die Karakeep API hat einen Fehler zurückgegeben. Bitte die Konfiguration prüfen.",
+      "unknown": "Es ist ein unerwarteter Fehler aufgetreten. Details findest du im Log."
+    },
+    "abort": {
+      "already_configured": "Karakeep ist bereits konfiguriert",
+      "no_existing_config": "Keine vorhandene Karakeep-Konfiguration zum Neu-Konfigurieren gefunden",
+      "reconfigure_successful": "Karakeep-Konfiguration wurde erfolgreich aktualisiert"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Karakeep konfigurieren",
+        "description": "Einstellungen der Karakeep-Integration aktualisieren",
+        "data": {
+          "scan_interval": "Aktualisierungsintervall (Sekunden)"
+        }
+      }
+    }
+  }
+}
