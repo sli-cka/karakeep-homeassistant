@@ -1,9 +1,5 @@
 # Karakeep Integration for Home Assistant
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
-[![GitHub Release](https://img.shields.io/github/release/sli-cka/ha-karakeep.svg?style=flat-square)](https://github.com/sli-cka/ha-karakeep/releases)
-[![License](https://img.shields.io/github/license/sli-cka/ha-karakeep.svg?style=flat-square)](LICENSE)
-
 This custom integration allows you to monitor your Karakeep statistics in Home Assistant. Karakeep is a bookmarking and content management service that helps you organize your digital content with features like bookmarks, favorites, highlights, and tags.
 
 ## Features
@@ -22,7 +18,7 @@ This custom integration allows you to monitor your Karakeep statistics in Home A
    - Go to HACS > Integrations
    - Click the three dots in the top right corner
    - Select "Custom repositories"
-   - Add `https://github.com/sli-cka/ha-karakeep` as the repository URL
+   - Add `https://github.com/sli-cka/karakeep-homeassistant` as the repository URL
    - Select "Integration" as the category
    - Click "Add"
 3. Search for "Karakeep" in the HACS Integrations store
@@ -31,7 +27,7 @@ This custom integration allows you to monitor your Karakeep statistics in Home A
 
 ### Manual Installation
 
-1. Download the latest release from the [releases page](https://github.com/sli-cka/ha-karakeep/releases)
+1. Download the latest release from the [releases page](https://github.com/sli-cka/karakeep-homeassistant/releases)
 2. Create a `custom_components` directory in your Home Assistant configuration directory if it doesn't already exist
 3. Extract the `karakeep` directory from the release into the `custom_components` directory
 4. Restart Home Assistant
