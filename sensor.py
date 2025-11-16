@@ -99,7 +99,7 @@ class KarakeepStatSensor(CoordinatorEntity, SensorEntity):
             "identifiers": {(DOMAIN, self._entry_id)},
             "name": "Karakeep",
             "manufacturer": "Karakeep",
-            "model": "Karakeep API",
+            #sw_version": # Uncomment if version info is available
         }
 
     @property
