@@ -4,6 +4,7 @@ import logging
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription, SensorStateClass
 from homeassistant.const import EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.device_registry import DeviceEntryType
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -55,7 +56,7 @@ class KarakeepStatSensor(CoordinatorEntity, SensorEntity):
 
     # Expose as standard sensors (mainly) instead of diagnostics-only
     # Use measurement since these are numeric counts that can change over time.
-    _attr_has_entity_name = False
+    _attr_has_entity_name = True
 
     def __init__(
         self,
@@ -72,7 +73,7 @@ class KarakeepStatSensor(CoordinatorEntity, SensorEntity):
 
         self.entity_description = SensorEntityDescription(
             key=key,
-            name=f"Karakeep {name}",
+            name=name,
             icon=f"mdi:{icon}",
             state_class=SensorStateClass.MEASUREMENT,
         )
@@ -87,6 +88,16 @@ class KarakeepStatSensor(CoordinatorEntity, SensorEntity):
             name,
             self._attr_unique_id,
         )
+
+    @property
+    def device_info(self) -> dict:
+        """Return device info to group entities under a service."""
+        return {
+            "identifiers": {(DOMAIN, self._entry_id)},
+            "name": "Karakeep",
+            "manufacturer": "Karakeep",
+            "entry_type": DeviceEntryType.SERVICE,
+        }
 
     @property
     def native_value(self):
