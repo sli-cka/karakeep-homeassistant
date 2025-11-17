@@ -55,7 +55,7 @@ class KarakeepStatSensor(CoordinatorEntity, SensorEntity):
 
     # Expose as standard sensors (mainly) instead of diagnostics-only
     # Use measurement since these are numeric counts that can change over time.
-    _attr_has_entity_name = True
+    _attr_has_entity_name = False
 
     def __init__(
         self,
@@ -72,7 +72,7 @@ class KarakeepStatSensor(CoordinatorEntity, SensorEntity):
 
         self.entity_description = SensorEntityDescription(
             key=key,
-            name=name,
+            name=f"Karakeep {name}",
             icon=f"mdi:{icon}",
             state_class=SensorStateClass.MEASUREMENT,
         )
@@ -87,20 +87,6 @@ class KarakeepStatSensor(CoordinatorEntity, SensorEntity):
             name,
             self._attr_unique_id,
         )
-
-    @property
-    def device_info(self) -> dict:
-        """Return device info for this Karakeep instance.
-
-        Groups all sensors from the same config entry under a single device,
-        similar to paperless-ngx/immich integrations.
-        """
-        return {
-            "identifiers": {(DOMAIN, self._entry_id)},
-            "name": "Karakeep",
-            "manufacturer": "Karakeep",
-            #sw_version": # Uncomment if version info is available
-        }
 
     @property
     def native_value(self):
