@@ -7,7 +7,6 @@ This custom integration allows you to monitor your Karakeep statistics in Home A
 - Monitor the number of bookmarks, favorites, archived items, highlights, lists, and tags in your Karakeep account
 - Configurable update interval
 - Secure API token authentication
-- Diagnostic sensors for easy monitoring
 
 ## Installation
 
@@ -51,10 +50,10 @@ The Karakeep integration is configured through the Home Assistant UI:
 To obtain your Karakeep API token:
 
 1. Log in to your Karakeep account
-2. Navigate to your account settings
-3. Look for the API or Developer section
-4. Generate a new API token
-5. Copy the token for use in Home Assistant
+2. Navigate to your user settings
+3. Look for the API Keys section
+4. Generate a new API Key
+5. Copy the key for use in Home Assistant
 
 ## Available Sensors
 
@@ -71,7 +70,7 @@ The integration creates the following sensors:
 
 ## Requirements
 
-- Home Assistant 2023.1.0 or newer
+- Home Assistant
 - A Karakeep account with API access
 - Network access from your Home Assistant instance to the Karakeep API
 
