@@ -10,12 +10,12 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 STATS = {
-    "numBookmarks":  ("Bookmarks", "bookmark"),
-    "numFavorites":  ("Favorites", "star"),
-    "numArchived":   ("Archived", "archive"),
-    "numHighlights": ("Highlights", "marker"),
-    "numLists":      ("Lists", "format-list-bulleted"),
-    "numTags":       ("Tags", "tag"),
+    "numBookmarks":  ("Bookmarks", "bookmark", "bookmarks"),
+    "numFavorites":  ("Favorites", "star", "favorites"),
+    "numArchived":   ("Archived", "archive", "items"),
+    "numHighlights": ("Highlights", "marker", "highlights"),
+    "numLists":      ("Lists", "format-list-bulleted", "lists"),
+    "numTags":       ("Tags", "tag", "tags"),
 }
 
 async def async_setup_entry(hass, entry, async_add_entities):
@@ -30,7 +30,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
     )
 
     entities: list[KarakeepStatSensor] = []
-    for key, (name, icon) in STATS.items():
+    for key, (name, icon, unit) in STATS.items():
         _LOGGER.debug(
             "Creating KarakeepStatSensor for stat: %s with name: %s",
             key,
@@ -43,6 +43,7 @@ async def async_setup_entry(hass, entry, async_add_entities):
                 key=key,
                 name=name,
                 icon=icon,
+                unit=unit,
             )
         )
 
@@ -65,6 +66,7 @@ class KarakeepStatSensor(CoordinatorEntity, SensorEntity):
         key: str,
         name: str,
         icon: str,
+        unit: str,
     ) -> None:
         """Initialize the sensor."""
         super().__init__(coordinator)
@@ -76,6 +78,7 @@ class KarakeepStatSensor(CoordinatorEntity, SensorEntity):
             name=name,
             icon=f"mdi:{icon}",
             state_class=SensorStateClass.MEASUREMENT,
+            native_unit_of_measurement=unit,
         )
 
         # Unique per config entry and stat key
