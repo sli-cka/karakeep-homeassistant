@@ -1,0 +1,51 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Karakeep",
+        "description": "Configure connection to your Karakeep instance",
+        "data": {
+          "url": "Karakeep base URL (e.g. https://app.karakeep.com)",
+          "token": "Karakeep API token",
+          "scan_interval": "Update interval (seconds)"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Karakeep",
+        "description": "Update Karakeep connection settings",
+        "data": {
+          "url": "Karakeep base URL (e.g. https://app.karakeep.com)",
+          "token": "Karakeep API token",
+          "scan_interval": "Update interval (seconds)"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the Karakeep server. Please check your network connection and try again.",
+      "invalid_auth": "Invalid authentication token. Please check your API token and try again.",
+      "invalid_url": "The provided URL is invalid. Please enter a valid Karakeep API URL.",
+      "invalid_url_format": "The URL format is invalid. Please ensure it includes the protocol (http:// or https://) and domain.",
+      "timeout_error": "Connection to the Karakeep server timed out. Please try again later.",
+      "client_error": "An error occurred while communicating with the Karakeep API. Please try again.",
+      "invalid_api_path": "The API path is invalid. Please check your URL configuration.",
+      "api_error": "The Karakeep API returned an error. Please check your configuration.",
+      "unknown": "An unexpected error occurred. Please check the logs for more information."
+     },
+     "abort": {
+       "already_configured": "Karakeep is already configured",
+       "no_existing_config": "No existing Karakeep configuration found to reconfigure",
+       "reconfigure_successful": "Karakeep configuration updated successfully"
+     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Karakeep",
+        "description": "Update Karakeep integration settings",
+        "data": {
+          "scan_interval": "Scan Interval (seconds)"
+        }
+      }
+    }
+  }
+}
