@@ -4,6 +4,7 @@ import logging
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription, SensorStateClass
 from homeassistant.const import EntityCategory
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.device_registry import DeviceEntryType
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -90,16 +91,12 @@ class KarakeepStatSensor(CoordinatorEntity, SensorEntity):
 
     @property
     def device_info(self) -> dict:
-        """Return device info for this Karakeep instance.
-
-        Groups all sensors from the same config entry under a single device,
-        similar to paperless-ngx/immich integrations.
-        """
+        """Return device info to group entities under a service."""
         return {
             "identifiers": {(DOMAIN, self._entry_id)},
             "name": "Karakeep",
             "manufacturer": "Karakeep",
-            "model": "Karakeep API",
+            "entry_type": DeviceEntryType.SERVICE,
         }
 
     @property
