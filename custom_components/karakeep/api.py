@@ -40,6 +40,11 @@ class KarakeepClient:
             timeout
         )
 
+    @property
+    def _headers(self) -> dict[str, str]:
+        """Return headers for the request."""
+        return {"Authorization": f"Bearer {self._token}"}
+
     async def async_get_stats(self) -> dict[str, Any]:
         """Return /users/me/stats response.
         
@@ -55,19 +60,13 @@ class KarakeepClient:
             Exception: For any other unexpected errors
         """
         endpoint = f"{self._url}/api/v1/users/me/stats"
-        headers = {"Authorization": f"Bearer {self._token[:5]}...{self._token[-5:] if len(self._token) > 10 else ''}"}
         
-        _LOGGER.debug(
-            "Preparing request to Karakeep API endpoint: %s with headers: %s",
-            endpoint,
-            headers
-        )
+        _LOGGER.debug("Sending GET request to Karakeep API: %s", endpoint)
 
         try:
-            _LOGGER.debug("Sending GET request to Karakeep API: %s", endpoint)
             async with self._session.get(
                 endpoint,
-                headers={"Authorization": f"Bearer {self._token}"},
+                headers=self._headers,
                 timeout=self._timeout
             ) as resp:
                 _LOGGER.debug(
@@ -172,19 +171,13 @@ class KarakeepClient:
             Exception: For any other unexpected errors
         """
         endpoint = f"{self._url}/api/health"
-        headers = {"Authorization": f"Bearer {self._token[:5]}...{self._token[-5:] if len(self._token) > 10 else ''}"}
         
-        _LOGGER.debug(
-            "Preparing health check request to Karakeep API endpoint: %s with headers: %s",
-            endpoint,
-            headers
-        )
+        _LOGGER.debug("Sending GET request to Karakeep health endpoint: %s", endpoint)
 
         try:
-            _LOGGER.debug("Sending GET request to Karakeep health endpoint: %s", endpoint)
             async with self._session.get(
                 endpoint,
-                headers={"Authorization": f"Bearer {self._token}"},
+                headers=self._headers,
                 timeout=self._timeout
             ) as resp:
                 _LOGGER.debug(

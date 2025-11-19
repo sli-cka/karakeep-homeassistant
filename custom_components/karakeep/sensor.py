@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import logging
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription, SensorStateClass
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import EntityCategory
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from homeassistant.helpers.device_registry import DeviceEntryType
 from .const import DOMAIN
@@ -18,7 +21,11 @@ STATS = {
     "numTags":       ("Tags", "tag", "tags"),
 }
 
-async def async_setup_entry(hass, entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+) -> None:
     """Set up Karakeep sensors based on a config entry."""
     _LOGGER.debug("Setting up Karakeep sensor entities for entry_id: %s", entry.entry_id)
 

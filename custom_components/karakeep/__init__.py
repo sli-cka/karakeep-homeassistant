@@ -91,14 +91,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     return unload_ok
 
 
-async def async_update_options(hass: HomeAssistant, entry: ConfigEntry):
+async def async_update_options(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Update options."""
-    _LOGGER.debug("Updating options for entry_id: %s", entry.entry_id)
-    
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-    
-    if CONF_SCAN_INTERVAL in entry.options:
-        scan_interval = entry.options[CONF_SCAN_INTERVAL]
-        _LOGGER.debug("Updating scan interval to: %s seconds", scan_interval)
-        coordinator.update_interval = timedelta(seconds=scan_interval)
-        _LOGGER.debug("Scan interval updated successfully")
+    await hass.config_entries.async_reload(entry.entry_id)
