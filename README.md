@@ -5,6 +5,7 @@ This custom integration allows you to monitor your Karakeep statistics in Home A
 ## Features
 
 - Monitor the number of bookmarks, favorites, archived items, highlights, lists, and tags in your Karakeep account
+- Health monitoring with diagnostic binary sensor to track API availability
 - Configurable update interval
 - Secure API token authentication
 
@@ -59,6 +60,8 @@ To obtain your Karakeep API token:
 
 The integration creates the following sensors:
 
+### Statistics Sensors
+
 | Sensor | Description | Icon |
 |--------|-------------|------|
 | `sensor.karakeep_bookmarks` | Number of bookmarks | mdi:bookmark |
@@ -67,6 +70,12 @@ The integration creates the following sensors:
 | `sensor.karakeep_highlights` | Number of highlights | mdi:marker |
 | `sensor.karakeep_lists` | Number of lists | mdi:format-list-bulleted |
 | `sensor.karakeep_tags` | Number of tags | mdi:tag |
+
+### Diagnostic Sensors
+
+| Sensor | Description | Type | Device Class |
+|--------|-------------|------|--------------|
+| `binary_sensor.karakeep_health` | API health status | Binary Sensor | Problem |
 
 ## Requirements
 
