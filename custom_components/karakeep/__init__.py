@@ -36,8 +36,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         """Fetch data from Karakeep API."""
         _LOGGER.debug("Starting data update from Karakeep API")
         try:
+            # Fetch stats
             data = await client.async_get_stats()
-            _LOGGER.debug("Data update successful, received %d data points", len(data) if data else 0)
+            _LOGGER.debug("Stats update successful, received %d data points", len(data) if data else 0)
+            
+            # Fetch health status
+            health_data = await client.async_get_health()
+            data["health"] = health_data
+            _LOGGER.debug("Health check successful: %s", health_data)
+            
             return data
         except Exception as err:
             _LOGGER.debug("Data update failed: %s", str(err))

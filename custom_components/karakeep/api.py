@@ -156,3 +156,90 @@ class KarakeepClient:
                 str(err)
             )
             raise
+
+    async def async_get_health(self) -> dict[str, Any]:
+        """Return /api/health response.
+        
+        Returns:
+            Dictionary containing health status information
+            
+        Raises:
+            ClientResponseError: If the API returns an error status code
+            ClientConnectorError: If connection to the API fails
+            ContentTypeError: If the response is not valid JSON
+            ServerTimeoutError: If the API request times out
+            ClientError: For other aiohttp client errors
+            Exception: For any other unexpected errors
+        """
+        endpoint = f"{self._url}/api/health"
+        headers = {"Authorization": f"Bearer {self._token[:5]}...{self._token[-5:] if len(self._token) > 10 else ''}"}
+        
+        _LOGGER.debug(
+            "Preparing health check request to Karakeep API endpoint: %s with headers: %s",
+            endpoint,
+            headers
+        )
+
+        try:
+            _LOGGER.debug("Sending GET request to Karakeep health endpoint: %s", endpoint)
+            async with self._session.get(
+                endpoint,
+                headers={"Authorization": f"Bearer {self._token}"},
+                timeout=self._timeout
+            ) as resp:
+                _LOGGER.debug(
+                    "Received health check response from Karakeep API with status: %s, content-type: %s",
+                    resp.status,
+                    resp.headers.get("content-type", "unknown")
+                )
+                
+                # Store the status code for the response
+                status_code = resp.status
+                
+                # Try to parse JSON response
+                try:
+                    data = await resp.json()
+                    data["status_code"] = status_code
+                    _LOGGER.debug(
+                        "Successfully retrieved health status from Karakeep API: %s",
+                        data
+                    )
+                    return data
+                except Exception:
+                    # If JSON parsing fails, return basic status
+                    _LOGGER.debug("Could not parse JSON response, returning basic status info")
+                    return {"status_code": status_code, "status": "unknown"}
+                    
+        except ClientResponseError as err:
+            _LOGGER.debug(
+                "ClientResponseError during health check - Status: %s, Message: %s",
+                err.status,
+                err.message
+            )
+            # Return error status instead of raising
+            return {"status_code": err.status, "status": "error"}
+            
+        except ClientConnectorError as err:
+            _LOGGER.debug(
+                "ClientConnectorError during health check: %s",
+                str(err)
+            )
+            # Return connection error status
+            return {"status_code": 0, "status": "connection_error"}
+            
+        except ServerTimeoutError as err:
+            _LOGGER.debug(
+                "ServerTimeoutError during health check (timeout=%s seconds): %s",
+                self._timeout.total, str(err)
+            )
+            # Return timeout status
+            return {"status_code": 0, "status": "timeout"}
+            
+        except Exception as err:
+            _LOGGER.debug(
+                "Unexpected exception during health check - Type: %s: %s",
+                type(err).__name__,
+                str(err)
+            )
+            # Return generic error status
+            return {"status_code": 0, "status": "error"}

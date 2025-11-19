@@ -1,7 +1,7 @@
 {
   "domain": "karakeep",
   "name": "Karakeep",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "documentation": "https://github.com/sli-cka/karakeep-homeassistant",
   "issue_tracker": "https://github.com/sli-cka/karakeep-homeassistant/issues",
   "requirements": [],
