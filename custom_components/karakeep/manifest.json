@@ -1,13 +1,13 @@
 {
   "domain": "karakeep",
   "name": "Karakeep",
-  "version": "0.7.0",
-  "documentation": "https://github.com/sli-cka/karakeep-homeassistant",
-  "issue_tracker": "https://github.com/sli-cka/karakeep-homeassistant/issues",
-  "requirements": [],
+  "after_dependencies": [],
   "codeowners": ["@sli-cka"],
   "config_flow": true,
-  "iot_class": "local_polling",
   "dependencies": [],
-  "after_dependencies": []
+  "documentation": "https://github.com/sli-cka/karakeep-homeassistant",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/sli-cka/karakeep-homeassistant/issues",
+  "requirements": [],
+  "version": "0.8.0"
 }
