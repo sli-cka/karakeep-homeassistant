@@ -42,7 +42,7 @@ The Karakeep integration is configured through the Home Assistant UI:
 
 ### Required Configuration Parameters
 
-- **Karakeep API URL**: The URL of your Karakeep API (e.g., `https://api.karakeep.com`)
+- **Karakeep URL**: The URL of your Karakeep instance (e.g., `https://try.karakeep.app/`)
 - **API Token**: Your Karakeep API authentication token
 - **Scan Interval**: How often to update the data (in seconds, minimum 30 seconds, default 300 seconds)
 
