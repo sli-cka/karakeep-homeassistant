@@ -66,15 +66,23 @@ class KarakeepConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             url = user_input.get(CONF_URL, "").strip()
             token = user_input.get(CONF_TOKEN, "").strip()
-            scan_interval = user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
 
-            _LOGGER.debug(
-                "Processing %s step input: url=%s, token_len=%s, scan_interval=%s",
-                step_id,
-                url,
-                len(token) if token else 0,
-                scan_interval,
-            )
+            if step_id == "user":
+                scan_interval = user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+                _LOGGER.debug(
+                    "Processing %s step input: url=%s, token_len=%s, scan_interval=%s",
+                    step_id,
+                    url,
+                    len(token) if token else 0,
+                    scan_interval,
+                )
+            else:
+                _LOGGER.debug(
+                    "Processing %s step input: url=%s, token_len=%s",
+                    step_id,
+                    url,
+                    len(token) if token else 0,
+                )
 
             # Validate URL
             try:
@@ -112,8 +120,9 @@ class KarakeepConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         data = {
                             CONF_URL: normalized_url,
                             CONF_TOKEN: token,
-                            CONF_SCAN_INTERVAL: scan_interval,
                         }
+                        if step_id == "user":
+                            data[CONF_SCAN_INTERVAL] = scan_interval
 
                         # Prevent duplicate configuration for the same URL when creating
                         for existing in self._async_current_entries():
@@ -133,13 +142,13 @@ class KarakeepConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                                 "Updating existing Karakeep entry_id=%s with new data",
                                 existing_entry.entry_id,
                             )
+                            # Preserve existing scan_interval in data if present
+                            if CONF_SCAN_INTERVAL in existing_entry.data:
+                                data[CONF_SCAN_INTERVAL] = existing_entry.data[CONF_SCAN_INTERVAL]
+
                             self.hass.config_entries.async_update_entry(
                                 existing_entry,
                                 data=data,
-                                options={
-                                    **existing_entry.options,
-                                    CONF_SCAN_INTERVAL: scan_interval,
-                                },
                             )
                             return self.async_abort(reason="reconfigure_successful")
 
@@ -234,16 +243,17 @@ class KarakeepConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors,
         )
 
-        schema = vol.Schema(
-            {
-                vol.Required(CONF_URL, default=default_url): str,
-                vol.Required(CONF_TOKEN, default=default_token): str,
-                vol.Optional(
-                    CONF_SCAN_INTERVAL,
-                    default=default_interval,
-                ): vol.All(cv.positive_int, vol.Range(min=30)),
-            }
-        )
+        schema_dict = {
+            vol.Required(CONF_URL, default=default_url): str,
+            vol.Required(CONF_TOKEN, default=default_token): str,
+        }
+        if step_id == "user":
+            schema_dict[vol.Optional(
+                CONF_SCAN_INTERVAL,
+                default=default_interval,
+            )] = vol.All(cv.positive_int, vol.Range(min=30))
+
+        schema = vol.Schema(schema_dict)
 
         return self.async_show_form(
             step_id=step_id,
