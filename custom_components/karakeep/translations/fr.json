@@ -15,8 +15,14 @@
         "description": "Mettre à jour les paramètres de connexion Karakeep",
         "data": {
           "url": "URL de base Karakeep (par ex. https://app.karakeep.com)",
-          "token": "Jeton API Karakeep",
-          "scan_interval": "Intervalle de mise à jour (secondes)"
+          "token": "Jeton API Karakeep"
+        }
+      },
+      "reauth": {
+        "title": "Réauthentifier Karakeep",
+        "description": "Le jeton API est invalide ou a expiré. Veuillez saisir un nouveau jeton pour continuer à utiliser Karakeep.\n\nURL: {url}",
+        "data": {
+          "token": "Jeton API Karakeep"
         }
       }
     },
@@ -33,8 +39,9 @@
     },
     "abort": {
       "already_configured": "Karakeep est déjà configuré",
-      "no_existing_config": "Aucune configuration Karakeep existante à reconfigurer",
-      "reconfigure_successful": "La configuration Karakeep a été mise à jour avec succès"
+      "no_existing_config": "Aucune configuration Karakeep existante trouvée",
+      "reconfigure_successful": "La configuration Karakeep a été mise à jour avec succès",
+      "reauth_successful": "Réauthentification réussie"
     }
   },
   "options": {

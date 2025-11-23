@@ -15,8 +15,14 @@
         "description": "Actualiza la configuración de la conexión de Karakeep",
         "data": {
           "url": "URL base de Karakeep (p. ej. https://app.karakeep.com)",
-          "token": "Token de API de Karakeep",
-          "scan_interval": "Intervalo de actualización (segundos)"
+          "token": "Token de API de Karakeep"
+        }
+      },
+      "reauth": {
+        "title": "Reautenticar Karakeep",
+        "description": "El token de API no es válido o ha caducado. Introduce un nuevo token para seguir usando Karakeep.\n\nURL: {url}",
+        "data": {
+          "token": "Token de API de Karakeep"
         }
       }
     },
@@ -33,8 +39,9 @@
     },
     "abort": {
       "already_configured": "Karakeep ya está configurado",
-      "no_existing_config": "No se encontró ninguna configuración existente de Karakeep para reconfigurar",
-      "reconfigure_successful": "La configuración de Karakeep se ha actualizado correctamente"
+      "no_existing_config": "No se encontró ninguna configuración existente de Karakeep",
+      "reconfigure_successful": "La configuración de Karakeep se ha actualizado correctamente",
+      "reauth_successful": "Reautenticación exitosa"
     }
   },
   "options": {

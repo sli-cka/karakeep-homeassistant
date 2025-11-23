@@ -36,7 +36,7 @@ class KarakeepConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_reconfigure(self, user_input=None) -> FlowResult:
         """Handle reconfiguration of an existing Karakeep entry.
 
-        Exposed via the UI (Reconfigure menu) to update URL/token/scan_interval.
+        Exposed via the UI (Reconfigure menu) to update URL/token.
         """
         _LOGGER.debug("Starting Karakeep config flow - reconfigure step")
         if not self._async_current_entries():
@@ -47,6 +47,113 @@ class KarakeepConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         # Home Assistant will pass the correct entry_id context.
         entry = self._async_current_entries()[0]
         return await self._async_handle_config_step("reconfigure", user_input, entry)
+
+    async def async_step_reauth(self, user_input=None) -> FlowResult:
+        """Handle reauthentication when API token is invalid."""
+        _LOGGER.debug("Starting Karakeep config flow - reauth step")
+        entry = self.hass.config_entries.async_get_entry(self.context["entry_id"])
+        if entry is None:
+            _LOGGER.debug("Reauth requested but entry not found, aborting")
+            return self.async_abort(reason="no_existing_config")
+
+        return await self._async_handle_reauth_step(user_input, entry)
+
+    async def _async_handle_reauth_step(
+        self,
+        user_input,
+        existing_entry: config_entries.ConfigEntry,
+    ) -> FlowResult:
+        """Handle reauthentication step - only update token."""
+        errors: dict[str, str] = {}
+
+        if user_input is not None:
+            token = user_input.get(CONF_TOKEN, "").strip()
+            url = existing_entry.data[CONF_URL]
+
+            _LOGGER.debug(
+                "Processing reauth step input: url=%s (from existing), token_len=%s",
+                url,
+                len(token) if token else 0,
+            )
+
+            session = async_get_clientsession(self.hass)
+            client = KarakeepClient(url, token, session)
+
+            try:
+                _LOGGER.debug("Testing connection to Karakeep API for reauth at %s", url)
+                await client.async_get_stats()
+                _LOGGER.info("Successfully validated Karakeep token during reauth")
+
+                # Update only the token
+                data = {**existing_entry.data, CONF_TOKEN: token}
+                _LOGGER.debug(
+                    "Updating existing Karakeep entry_id=%s with new token",
+                    existing_entry.entry_id,
+                )
+                self.hass.config_entries.async_update_entry(
+                    existing_entry,
+                    data=data,
+                )
+                await self.hass.config_entries.async_reload(existing_entry.entry_id)
+                return self.async_abort(reason="reauth_successful")
+
+            except ClientResponseError as err:
+                _LOGGER.debug(
+                    "Response error details during reauth - Status: %s, Message: %s",
+                    err.status,
+                    err.message,
+                )
+                _LOGGER.error("Invalid response from API during reauth: %s", err)
+                if err.status == 401:
+                    errors["base"] = "invalid_auth"
+                elif err.status == 404:
+                    errors["base"] = "invalid_api_path"
+                else:
+                    errors["base"] = "api_error"
+            except ClientConnectorError as err:
+                _LOGGER.debug("Connection error details during reauth: %s", err)
+                _LOGGER.error("Connection error during reauth: %s", err)
+                errors["base"] = "cannot_connect"
+            except ClientTimeout as err:
+                _LOGGER.debug("Timeout error details during reauth: %s", err)
+                _LOGGER.error("Timeout connecting to API during reauth")
+                errors["base"] = "timeout_error"
+            except ClientError as err:
+                _LOGGER.debug(
+                    "Client error type during reauth: %s, details: %s",
+                    type(err).__name__,
+                    err,
+                )
+                _LOGGER.error("Client error during reauth: %s", err)
+                errors["base"] = "client_error"
+            except Exception as err:  # noqa: BLE001
+                _LOGGER.debug(
+                    "Unexpected error type during reauth: %s",
+                    type(err).__name__,
+                )
+                _LOGGER.exception("Unexpected error during reauth: %s", err)
+                errors["base"] = "unknown"
+
+        # Show form with only token field
+        default_token = ""
+        _LOGGER.debug(
+            "Showing reauth form for URL: %s; errors=%s",
+            existing_entry.data[CONF_URL],
+            errors,
+        )
+
+        schema = vol.Schema(
+            {
+                vol.Required(CONF_TOKEN, default=default_token): str,
+            }
+        )
+
+        return self.async_show_form(
+            step_id="reauth",
+            data_schema=schema,
+            errors=errors,
+            description_placeholders={"url": existing_entry.data[CONF_URL]},
+        )
 
     async def _async_handle_config_step(
         self,

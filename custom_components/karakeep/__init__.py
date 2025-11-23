@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import logging
 from datetime import timedelta
+from aiohttp import ClientResponseError
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
     UpdateFailed,
@@ -46,6 +48,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             _LOGGER.debug("Health check successful: %s", health_data)
             
             return data
+        except ClientResponseError as err:
+            if err.status == 401:
+                _LOGGER.error(
+                    "Authentication failed for Karakeep API. Token may be invalid or expired."
+                )
+                raise ConfigEntryAuthFailed(
+                    "Invalid or expired API token. Please reauthenticate."
+                ) from err
+            _LOGGER.debug("Data update failed with response error: %s", str(err))
+            raise UpdateFailed(f"API error: {err}") from err
         except Exception as err:
             _LOGGER.debug("Data update failed: %s", str(err))
             raise UpdateFailed(err) from err
