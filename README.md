@@ -13,14 +13,9 @@ This custom integration allows you to monitor your Karakeep statistics in Home A
 
 ### HACS Installation (Recommended)
 
+<a href="https://my.home-assistant.io/redirect/hacs_repository/?owner=sli-cka&repository=karakeep-homeassistant&category=integration" target="_blank" rel="noreferrer noopener"><img src="https://my.home-assistant.io/badges/hacs_repository.svg" alt="Open your Home Assistant instance and open a repository inside the Home Assistant Community Store." /></a>
+
 1. Ensure that [HACS](https://hacs.xyz/) is installed in your Home Assistant instance
-2. Add this repository as a custom repository in HACS:
-   - Go to HACS > Integrations
-   - Click the three dots in the top right corner
-   - Select "Custom repositories"
-   - Add `https://github.com/sli-cka/karakeep-homeassistant` as the repository URL
-   - Select "Integration" as the category
-   - Click "Add"
 3. Search for "Karakeep" in the HACS Integrations store
 4. Click "Install"
 5. Restart Home Assistant
@@ -35,6 +30,8 @@ This custom integration allows you to monitor your Karakeep statistics in Home A
 ## Configuration
 
 The Karakeep integration is configured through the Home Assistant UI:
+
+<a href="https://my.home-assistant.io/redirect/config_flow_start/?domain=karakeep" target="_blank" rel="noreferrer noopener"><img src="https://my.home-assistant.io/badges/config_flow_start.svg" alt="Open your Home Assistant instance and start setting up a new integration." /></a>
 
 1. Go to **Settings** > **Devices & Services**
 2. Click the **+ Add Integration** button
