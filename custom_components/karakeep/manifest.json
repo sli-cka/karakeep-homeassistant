@@ -9,5 +9,5 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/sli-cka/karakeep-homeassistant/issues",
   "requirements": [],
-  "version": "0.10.0"
+  "version": "1.0.0"
 }
