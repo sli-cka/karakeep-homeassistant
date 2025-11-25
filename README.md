@@ -92,16 +92,7 @@ The integration creates the following sensors:
 
 ### Logs
 
-To get more detailed logs for troubleshooting, add the following to your `configuration.yaml`:
-
-```yaml
-logger:
-  default: info
-  logs:
-    custom_components.karakeep: debug
-```
-
-Restart Home Assistant after making these changes to apply the new logging configuration.
+To get more detailed logs for troubleshooting, click on `Enable Debug Logging` in the integration overview (via 3-dots menu) 
 
 ## Contributing
 
