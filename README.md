@@ -105,7 +105,7 @@ Restart Home Assistant after making these changes to apply the new logging confi
 
 ## Contributing
 
-Contributions to improve the Karakeep integration are welcome! Please feel free to submit a pull request or open an issue on the [GitHub repository](https://github.com/sli-cka/ha-karakeep).
+Contributions to improve the Karakeep integration are welcome! Please feel free to submit a pull request or open an issue.
 
 ## License
 
