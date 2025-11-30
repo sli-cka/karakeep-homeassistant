@@ -6,6 +6,7 @@ from homeassistant.components.update import (
     UpdateEntity,
     UpdateEntityFeature,
 )
+from homeassistant.const import EntityCategory
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -34,6 +35,7 @@ class KarakeepUpdateEntity(CoordinatorEntity, UpdateEntity):
     _attr_has_entity_name = True
     _attr_name = None
     _attr_supported_features = UpdateEntityFeature.RELEASE_NOTES
+    _attr_entity_category = EntityCategory.CONFIG
 
     def __init__(self, coordinator, entry: ConfigEntry) -> None:
         """Initialize the update entity."""
