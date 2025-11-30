@@ -6,6 +6,7 @@ This custom integration allows you to monitor your Karakeep statistics in Home A
 
 - Monitor the number of bookmarks, favorites, archived items, highlights, lists, and tags in your Karakeep account
 - Health monitoring with diagnostic binary sensor to track API availability
+- Update entity to track available Karakeep updates
 - Configurable update interval
 - Secure API token authentication
 
@@ -73,6 +74,14 @@ The integration creates the following sensors:
 | Sensor | Description | Type | Device Class |
 |--------|-------------|------|--------------|
 | `binary_sensor.karakeep_health` | API health status | Binary Sensor | Problem |
+
+### Update Entity
+
+| Entity | Description |
+|--------|-------------|
+| `update.karakeep_update` | Tracks installed vs latest version |
+
+> **Note:** The update entity requires Karakeep version 0.29.0 or later.
 
 ## Requirements
 

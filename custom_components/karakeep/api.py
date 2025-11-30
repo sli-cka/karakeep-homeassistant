@@ -236,3 +236,37 @@ class KarakeepClient:
             )
             # Return generic error status
             return {"status_code": 0, "status": "error"}
+
+    async def async_get_version(self) -> str | None:
+        """Return /api/version response.
+        
+        Returns:
+            String containing the version or None if not found
+        """
+        endpoint = f"{self._url}/api/version"
+        
+        _LOGGER.debug("Sending GET request to Karakeep version endpoint: %s", endpoint)
+
+        try:
+            async with self._session.get(
+                endpoint,
+                headers=self._headers,
+                timeout=self._timeout
+            ) as resp:
+                if resp.status == 404:
+                    _LOGGER.debug("Version endpoint not found (404)")
+                    return None
+                    
+                resp.raise_for_status()
+                data = await resp.json()
+                version = data.get("version")
+                _LOGGER.debug("Successfully retrieved version from Karakeep API: %s", version)
+                return version
+                
+        except Exception as err:
+            _LOGGER.debug(
+                "Error retrieving version - Type: %s: %s",
+                type(err).__name__,
+                str(err)
+            )
+            return None

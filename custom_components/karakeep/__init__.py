@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from datetime import timedelta
-from aiohttp import ClientResponseError
+from aiohttp import ClientResponseError, ClientTimeout
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
@@ -46,6 +46,28 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             health_data = await client.async_get_health()
             data["health"] = health_data
             _LOGGER.debug("Health check successful: %s", health_data)
+
+            # Fetch version
+            version = await client.async_get_version()
+            data["version"] = version
+            _LOGGER.debug("Version check successful: %s", version)
+
+            # Fetch latest version from GitHub
+            try:
+                async with session.get(
+                    "https://api.github.com/repos/karakeep-app/karakeep/releases/latest",
+                    timeout=ClientTimeout(total=10)
+                ) as resp:
+                    if resp.status == 200:
+                        gh_data = await resp.json()
+                        data["latest_version"] = gh_data.get("tag_name", "").lstrip("v")
+                        data["release_url"] = gh_data.get("html_url")
+                        data["release_notes"] = gh_data.get("body")
+                        _LOGGER.debug("Latest version check successful: %s", data["latest_version"])
+                    else:
+                        _LOGGER.warning("Failed to fetch latest version from GitHub: %s", resp.status)
+            except Exception as err:
+                _LOGGER.warning("Error fetching latest version from GitHub: %s", err)
             
             return data
         except ClientResponseError as err:
