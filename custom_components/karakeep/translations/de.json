@@ -5,7 +5,7 @@
         "title": "Mit Karakeep verbinden",
         "description": "Verbindung zu deiner Karakeep-Instanz konfigurieren",
         "data": {
-          "url": "Karakeep Basis-URL (z. B. https://app.karakeep.com)",
+          "url": "Karakeep Basis-URL",
           "token": "Karakeep API-Token",
           "scan_interval": "Aktualisierungsintervall (Sekunden)"
         }
@@ -14,7 +14,7 @@
         "title": "Karakeep neu konfigurieren",
         "description": "Einstellungen der Karakeep-Verbindung aktualisieren",
         "data": {
-          "url": "Karakeep Basis-URL (z. B. https://app.karakeep.com)",
+          "url": "Karakeep Basis-URL",
           "token": "Karakeep API-Token"
         }
       },

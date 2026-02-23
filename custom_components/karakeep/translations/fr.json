@@ -5,7 +5,7 @@
         "title": "Connecter Karakeep",
         "description": "Configurer la connexion à votre instance Karakeep",
         "data": {
-          "url": "URL de base Karakeep (par ex. https://app.karakeep.com)",
+          "url": "URL de base Karakeep",
           "token": "Jeton API Karakeep",
           "scan_interval": "Intervalle de mise à jour (secondes)"
         }
@@ -14,7 +14,7 @@
         "title": "Reconfigurer Karakeep",
         "description": "Mettre à jour les paramètres de connexion Karakeep",
         "data": {
-          "url": "URL de base Karakeep (par ex. https://app.karakeep.com)",
+          "url": "URL de base Karakeep",
           "token": "Jeton API Karakeep"
         }
       },
