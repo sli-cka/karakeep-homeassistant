@@ -7,6 +7,7 @@ This custom integration allows you to monitor your Karakeep statistics in Home A
 - Monitor the number of bookmarks, favorites, archived items, highlights, lists, and tags in your Karakeep account
 - Health monitoring with diagnostic binary sensor to track API availability
 - Update entity to track available Karakeep updates
+- Automatic repair issue notification when API is unavailable
 - Configurable update interval
 - Secure API token authentication
 
@@ -82,6 +83,16 @@ The integration creates the following sensors:
 | `update.karakeep_update` | Tracks installed vs latest version |
 
 > **Note:** The update entity requires Karakeep version 0.29.0 or later.
+
+## Repair Issues
+
+The integration automatically creates repair issues in Home Assistant's **Settings > System > Repairs** dashboard when problems are detected:
+
+| Issue | Description |
+|-------|-------------|
+| **API Unavailable** | Raised when the Karakeep server cannot be reached (connection refused, timeout, network errors). The issue is automatically resolved when connectivity is restored. |
+
+This helps you quickly identify and troubleshoot connectivity problems with your Karakeep instance.
 
 ## Requirements
 

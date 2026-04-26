@@ -54,5 +54,11 @@
         }
       }
     }
+  },
+  "issues": {
+    "api_unavailable": {
+      "title": "Karakeep API nicht erreichbar",
+      "description": "Die Karakeep API unter **{url}** ist derzeit nicht erreichbar.\n\nFehler: `{error}`\n\nBitte prüfe:\n- Ob der Karakeep-Server läuft\n- Ob die URL korrekt ist\n- Ob deine Netzwerkverbindung funktioniert\n\nDie Integration wird sich automatisch wiederherstellen, sobald die API wieder verfügbar ist."
+    }
   }
 }

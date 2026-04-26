@@ -1,8 +1,15 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 from datetime import timedelta
-from aiohttp import ClientResponseError, ClientTimeout
+from aiohttp import (
+    ClientResponseError,
+    ClientTimeout,
+    ClientConnectorError,
+    ServerTimeoutError,
+    ClientError,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
@@ -11,11 +18,24 @@ from homeassistant.helpers.update_coordinator import (
     UpdateFailed,
 )
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers import issue_registry as ir
 from homeassistant.const import CONF_URL, CONF_TOKEN
 from .const import DOMAIN, DEFAULT_SCAN_INTERVAL, CONF_SCAN_INTERVAL, PLATFORMS
 from .api import KarakeepClient
 
 _LOGGER = logging.getLogger(__name__)
+
+ISSUE_API_UNAVAILABLE = "api_unavailable"
+
+# Connection-related exceptions that indicate API unavailability
+CONNECTION_EXCEPTIONS = (
+    ClientConnectorError,
+    ServerTimeoutError,
+    asyncio.TimeoutError,
+    TimeoutError,
+    ConnectionError,
+    OSError,
+)
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up Karakeep from a config entry."""
@@ -69,6 +89,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             except Exception as err:
                 _LOGGER.warning("Error fetching latest version from GitHub: %s", err)
             
+            # API is available, delete any existing repair issue
+            ir.async_delete_issue(hass, DOMAIN, f"{ISSUE_API_UNAVAILABLE}_{entry.entry_id}")
+            
             return data
         except ClientResponseError as err:
             if err.status == 401:
@@ -80,6 +103,26 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                 ) from err
             _LOGGER.debug("Data update failed with response error: %s", str(err))
             raise UpdateFailed(f"API error: {err}") from err
+        except CONNECTION_EXCEPTIONS as err:
+            _LOGGER.error(
+                "Karakeep API at %s is unavailable: %s",
+                entry.data[CONF_URL],
+                str(err)
+            )
+            # Create a repair issue for API unavailability
+            ir.async_create_issue(
+                hass,
+                DOMAIN,
+                f"{ISSUE_API_UNAVAILABLE}_{entry.entry_id}",
+                is_fixable=False,
+                severity=ir.IssueSeverity.ERROR,
+                translation_key=ISSUE_API_UNAVAILABLE,
+                translation_placeholders={
+                    "url": entry.data[CONF_URL],
+                    "error": str(err),
+                },
+            )
+            raise UpdateFailed(f"API unavailable: {err}") from err
         except Exception as err:
             _LOGGER.debug("Data update failed: %s", str(err))
             raise UpdateFailed(err) from err
@@ -111,6 +154,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload Karakeep entry."""
     _LOGGER.debug("Unloading Karakeep integration for entry_id: %s", entry.entry_id)
+    
+    # Clean up any repair issues created by this entry
+    ir.async_delete_issue(hass, DOMAIN, f"{ISSUE_API_UNAVAILABLE}_{entry.entry_id}")
     
     _LOGGER.debug("Unloading platforms: %s", PLATFORMS)
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)

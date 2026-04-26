@@ -54,5 +54,11 @@
         }
       }
     }
+  },
+  "issues": {
+    "api_unavailable": {
+      "title": "Karakeep API unavailable",
+      "description": "The Karakeep API at **{url}** is currently unavailable.\n\nError: `{error}`\n\nPlease check that:\n- The Karakeep server is running\n- The URL is correct\n- Your network connection is working\n\nThe integration will automatically recover when the API becomes available again."
+    }
   }
 }

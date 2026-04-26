@@ -48,11 +48,17 @@
     "step": {
       "init": {
         "title": "Configurer Karakeep",
-        "description": "Mettre à jour les paramètres de l’intégration Karakeep",
+        "description": "Mettre à jour les paramètres de l'intégration Karakeep",
         "data": {
           "scan_interval": "Intervalle de mise à jour (secondes)"
         }
       }
+    }
+  },
+  "issues": {
+    "api_unavailable": {
+      "title": "API Karakeep indisponible",
+      "description": "L'API Karakeep à **{url}** est actuellement indisponible.\n\nErreur : `{error}`\n\nVeuillez vérifier que :\n- Le serveur Karakeep est en cours d'exécution\n- L'URL est correcte\n- Votre connexion réseau fonctionne\n\nL'intégration se rétablira automatiquement lorsque l'API sera à nouveau disponible."
     }
   }
 }
