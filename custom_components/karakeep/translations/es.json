@@ -7,7 +7,8 @@
         "data": {
           "url": "URL base de Karakeep",
           "token": "Token de API de Karakeep",
-          "scan_interval": "Intervalo de actualización (segundos)"
+          "scan_interval": "Intervalo de actualización (segundos)",
+          "enable_updates": "Activar entidad de actualización"
         }
       },
       "reconfigure": {
@@ -50,7 +51,8 @@
         "title": "Configurar Karakeep",
         "description": "Actualizar los ajustes de la integración de Karakeep",
         "data": {
-          "scan_interval": "Intervalo de actualización (segundos)"
+          "scan_interval": "Intervalo de actualización (segundos)",
+          "enable_updates": "Activar entidad de actualización"
         }
       }
     }

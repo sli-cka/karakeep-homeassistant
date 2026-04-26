@@ -6,7 +6,7 @@ This custom integration allows you to monitor your Karakeep statistics in Home A
 
 - Monitor the number of bookmarks, favorites, archived items, highlights, lists, and tags in your Karakeep account
 - Health monitoring with diagnostic binary sensor to track API availability
-- Update entity to track available Karakeep updates
+- Optional update entity to track available Karakeep updates (can be disabled to avoid GitHub API calls)
 - Automatic repair issue notification when API is unavailable
 - Configurable update interval
 - Secure API token authentication
@@ -39,11 +39,12 @@ The Karakeep integration is configured through the Home Assistant UI:
 2. Click the **+ Add Integration** button
 3. Search for "Karakeep" and select it
 
-### Required Configuration Parameters
+### Configuration Parameters
 
 - **Karakeep URL**: The URL of your Karakeep instance (e.g., `https://try.karakeep.app/`)
 - **API Token**: Your Karakeep API authentication token
 - **Scan Interval**: How often to update the data (in seconds, minimum 30 seconds, default 300 seconds)
+- **Enable Update Entity**: Whether to create an update entity that checks GitHub for new Karakeep releases (default: enabled)
 
 ### Obtaining Your API Token
 
@@ -76,11 +77,13 @@ The integration creates the following sensors:
 |--------|-------------|------|--------------|
 | `binary_sensor.karakeep_health` | API health status | Binary Sensor | Problem |
 
-### Update Entity
+### Update Entity (Optional)
 
 | Entity | Description |
 |--------|-------------|
 | `update.karakeep_update` | Tracks installed vs latest version |
+
+The update entity is **optional** and can be disabled during setup or later via the integration options. When disabled, the integration will not make any requests to the GitHub API to check for new releases.
 
 > **Note:** The update entity requires Karakeep version 0.29.0 or later.
 

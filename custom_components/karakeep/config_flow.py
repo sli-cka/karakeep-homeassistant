@@ -12,7 +12,7 @@ from homeassistant.data_entry_flow import FlowResult
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
 
-from .const import DOMAIN, CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL
+from .const import DOMAIN, CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL, CONF_ENABLE_UPDATES, DEFAULT_ENABLE_UPDATES
 from .api import KarakeepClient
 
 _LOGGER = logging.getLogger(__name__)
@@ -176,12 +176,14 @@ class KarakeepConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
             if step_id == "user":
                 scan_interval = user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+                enable_updates = user_input.get(CONF_ENABLE_UPDATES, DEFAULT_ENABLE_UPDATES)
                 _LOGGER.debug(
-                    "Processing %s step input: url=%s, token_len=%s, scan_interval=%s",
+                    "Processing %s step input: url=%s, token_len=%s, scan_interval=%s, enable_updates=%s",
                     step_id,
                     url,
                     len(token) if token else 0,
                     scan_interval,
+                    enable_updates,
                 )
             else:
                 _LOGGER.debug(
@@ -230,6 +232,7 @@ class KarakeepConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         }
                         if step_id == "user":
                             data[CONF_SCAN_INTERVAL] = scan_interval
+                            data[CONF_ENABLE_UPDATES] = enable_updates
 
                         # Prevent duplicate configuration for the same URL when creating
                         for existing in self._async_current_entries():
@@ -336,17 +339,23 @@ class KarakeepConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_SCAN_INTERVAL,
                 existing_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
             )
+            default_enable_updates = existing_entry.options.get(
+                CONF_ENABLE_UPDATES,
+                existing_entry.data.get(CONF_ENABLE_UPDATES, DEFAULT_ENABLE_UPDATES),
+            )
         else:
             default_url = ""
             default_token = ""
             default_interval = DEFAULT_SCAN_INTERVAL
+            default_enable_updates = DEFAULT_ENABLE_UPDATES
 
         _LOGGER.debug(
-            "Showing %s form with defaults: url=%s, token_len=%s, scan_interval=%s; errors=%s",
+            "Showing %s form with defaults: url=%s, token_len=%s, scan_interval=%s, enable_updates=%s; errors=%s",
             step_id,
             default_url,
             len(default_token) if default_token else 0,
             default_interval,
+            default_enable_updates,
             errors,
         )
 
@@ -359,6 +368,10 @@ class KarakeepConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 CONF_SCAN_INTERVAL,
                 default=default_interval,
             )] = vol.All(cv.positive_int, vol.Range(min=30))
+            schema_dict[vol.Optional(
+                CONF_ENABLE_UPDATES,
+                default=default_enable_updates,
+            )] = cv.boolean
 
         schema = vol.Schema(schema_dict)
 
@@ -382,17 +395,25 @@ class KarakeepOptionsFlow(config_entries.OptionsFlow):
             _LOGGER.debug("Updating options with: %s", user_input)
             return self.async_create_entry(title="", data=user_input)
 
-        # Get current scan interval from options, fall back to data if not in options
+        # Get current values from options, fall back to data if not in options
         current_scan_interval = self._config_entry.options.get(
             CONF_SCAN_INTERVAL,
             self._config_entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
+        )
+        current_enable_updates = self._config_entry.options.get(
+            CONF_ENABLE_UPDATES,
+            self._config_entry.data.get(CONF_ENABLE_UPDATES, DEFAULT_ENABLE_UPDATES)
         )
         
         options = {
             vol.Optional(
                 CONF_SCAN_INTERVAL,
                 default=current_scan_interval,
-            ): vol.All(cv.positive_int, vol.Range(min=30))
+            ): vol.All(cv.positive_int, vol.Range(min=30)),
+            vol.Optional(
+                CONF_ENABLE_UPDATES,
+                default=current_enable_updates,
+            ): cv.boolean,
         }
 
         _LOGGER.debug("Creating options form schema")

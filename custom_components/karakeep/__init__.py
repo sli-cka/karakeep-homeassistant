@@ -20,7 +20,7 @@ from homeassistant.helpers.update_coordinator import (
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers import issue_registry as ir
 from homeassistant.const import CONF_URL, CONF_TOKEN
-from .const import DOMAIN, DEFAULT_SCAN_INTERVAL, CONF_SCAN_INTERVAL, PLATFORMS
+from .const import DOMAIN, DEFAULT_SCAN_INTERVAL, CONF_SCAN_INTERVAL, PLATFORMS, CONF_ENABLE_UPDATES, DEFAULT_ENABLE_UPDATES
 from .api import KarakeepClient
 
 _LOGGER = logging.getLogger(__name__)
@@ -51,7 +51,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         CONF_SCAN_INTERVAL,
         entry.data.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)
     )
-    _LOGGER.debug("Creating Karakeep client with timeout: %s seconds", scan_interval)
+    enable_updates = entry.options.get(
+        CONF_ENABLE_UPDATES,
+        entry.data.get(CONF_ENABLE_UPDATES, DEFAULT_ENABLE_UPDATES)
+    )
+    _LOGGER.debug(
+        "Creating Karakeep client with timeout: %s seconds, enable_updates: %s",
+        scan_interval,
+        enable_updates,
+    )
     client = KarakeepClient(entry.data[CONF_URL], entry.data[CONF_TOKEN], session)
 
     async def async_update_data():
@@ -72,22 +80,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             data["version"] = version
             _LOGGER.debug("Version check successful: %s", version)
 
-            # Fetch latest version from GitHub
-            try:
-                async with session.get(
-                    "https://api.github.com/repos/karakeep-app/karakeep/releases/latest",
-                    timeout=ClientTimeout(total=10)
-                ) as resp:
-                    if resp.status == 200:
-                        gh_data = await resp.json()
-                        data["latest_version"] = gh_data.get("tag_name", "").lstrip("v")
-                        data["release_url"] = gh_data.get("html_url")
-                        data["release_notes"] = gh_data.get("body")
-                        _LOGGER.debug("Latest version check successful: %s", data["latest_version"])
-                    else:
-                        _LOGGER.warning("Failed to fetch latest version from GitHub: %s", resp.status)
-            except Exception as err:
-                _LOGGER.warning("Error fetching latest version from GitHub: %s", err)
+            # Fetch latest version from GitHub (only if enabled)
+            if enable_updates:
+                try:
+                    async with session.get(
+                        "https://api.github.com/repos/karakeep-app/karakeep/releases/latest",
+                        timeout=ClientTimeout(total=10)
+                    ) as resp:
+                        if resp.status == 200:
+                            gh_data = await resp.json()
+                            data["latest_version"] = gh_data.get("tag_name", "").lstrip("v")
+                            data["release_url"] = gh_data.get("html_url")
+                            data["release_notes"] = gh_data.get("body")
+                            _LOGGER.debug("Latest version check successful: %s", data["latest_version"])
+                        else:
+                            _LOGGER.warning("Failed to fetch latest version from GitHub: %s", resp.status)
+                except Exception as err:
+                    _LOGGER.warning("Error fetching latest version from GitHub: %s", err)
+            else:
+                _LOGGER.debug("Update entity disabled, skipping GitHub version check")
             
             # API is available, delete any existing repair issue
             ir.async_delete_issue(hass, DOMAIN, f"{ISSUE_API_UNAVAILABLE}_{entry.entry_id}")
@@ -145,7 +156,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
     _LOGGER.debug("Stored coordinator in hass.data[%s][%s]", DOMAIN, entry.entry_id)
-    
+
     _LOGGER.debug("Setting up platform entities: %s", PLATFORMS)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     _LOGGER.debug("Karakeep integration setup completed successfully")
@@ -154,10 +165,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload Karakeep entry."""
     _LOGGER.debug("Unloading Karakeep integration for entry_id: %s", entry.entry_id)
-    
+
     # Clean up any repair issues created by this entry
     ir.async_delete_issue(hass, DOMAIN, f"{ISSUE_API_UNAVAILABLE}_{entry.entry_id}")
-    
+
     _LOGGER.debug("Unloading platforms: %s", PLATFORMS)
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     
