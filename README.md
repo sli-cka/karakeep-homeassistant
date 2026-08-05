@@ -2,6 +2,56 @@
 
 This custom integration allows you to monitor your Karakeep statistics in Home Assistant. Karakeep is a bookmarking and content management service that helps you organize your digital content with features like bookmarks, favorites, highlights, and tags.
 
+> [!IMPORTANT]
+> **Karakeep is now part of Home Assistant Core**, starting with Home Assistant `2026.8`.
+> This custom integration remains available during a transition period, but new
+> development happens in Home Assistant Core. See
+> [Migrating to the Home Assistant Core integration](#migrating-to-the-home-assistant-core-integration).
+
+## Migrating to the Home Assistant Core integration
+
+Once you are running Home Assistant `2026.8` or later, the built-in Karakeep
+integration is available and you can switch to it.
+
+There is no automatic migration: the built-in integration stores its
+configuration differently, so you need to set it up once more. Follow the steps
+in this order to keep your entity IDs and history.
+
+1. **Delete the existing Karakeep entry first.** Go to **Settings** >
+   **Devices & Services** > **Karakeep**, then delete the config entry. Doing
+   this while the custom integration is still installed lets Home Assistant
+   clean up its entities and device properly.
+2. **Remove the custom integration** in HACS: **HACS** > **Karakeep** > **Remove**.
+3. **Restart Home Assistant.**
+4. **Add Karakeep again** via **Settings** > **Devices & Services** >
+   **+ Add Integration**. Enter your Karakeep URL and API token.
+
+When you follow this order, the new entities reuse the original entity IDs, so
+your existing history and long-term statistics continue uninterrupted.
+
+> [!NOTE]
+> Entity customizations are not preserved. If you renamed any Karakeep entities
+> or assigned them to areas, note those settings before deleting the entry.
+
+### Feature differences
+
+The first Home Assistant Core release covers config flow setup and the six
+statistic sensors. These features are currently only available in this custom
+integration:
+
+- Health binary sensor (`binary_sensor.karakeep_health`)
+- Update entity (`update.karakeep_update`)
+- Repair issue when the API is unavailable
+- Configurable scan interval
+
+If you rely on any of these, stay on the custom integration for now. Automations
+and dashboard cards referencing those entities stop working after switching.
+
+### Where to report issues
+
+- Problems with **this custom integration**: [open an issue here](https://github.com/sli-cka/karakeep-homeassistant/issues)
+- Problems with the **built-in integration**: report them in [home-assistant/core](https://github.com/home-assistant/core/issues)
+
 ## Features
 
 - Monitor the number of bookmarks, favorites, archived items, highlights, lists, and tags in your Karakeep account
